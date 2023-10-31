@@ -24,6 +24,7 @@ dependencies:
     - sympy
     - optuna
     - optax
+    - botorch
     - pip:
         - snakemake
         # - pystan # DP-GLM
