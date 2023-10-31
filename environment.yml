@@ -26,7 +26,6 @@ dependencies:
     - optax
     - pip:
         - snakemake
-        - pystan # DP-GLM
+        # - pystan # DP-GLM
         - d3p
         - git+https://github.com/ryan112358/private-pgm.git
-        # - git+https://github.com/pytorch/functorch.git@release/0.1
