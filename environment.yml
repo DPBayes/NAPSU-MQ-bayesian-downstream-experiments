@@ -1,0 +1,32 @@
+name: bayes-downstream-env
+channels: 
+    - conda-forge
+dependencies: 
+    - python
+    - numpy
+    - pandas
+    - scipy
+    - pytorch
+    - pyro-ppl
+    - matplotlib
+    - seaborn
+    - statsmodels
+    - arviz
+    - pip
+    - jupyterlab
+    - ipywidgets
+    - jax
+    - jaxlib
+    - jaxopt
+    - numpyro
+    - scikit-learn
+    - python-graphviz
+    - sympy
+    - optuna
+    - optax
+    - pip:
+        - snakemake
+        - pystan # DP-GLM
+        - d3p
+        - git+https://github.com/ryan112358/private-pgm.git
+        # - git+https://github.com/pytorch/functorch.git@release/0.1

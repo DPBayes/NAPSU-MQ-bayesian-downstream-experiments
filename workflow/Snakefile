@@ -1,0 +1,22 @@
+
+localrules: all 
+
+rule all:
+    input:
+        toy_data_ready="results/toy-data/ready-to-plot",
+        adult_reduced_ready="results/adult-reduced/ready-to-plot",
+
+module toy_data:
+    snakefile: 
+        "rules/toy-data.smk"
+    config: config
+
+use rule * from toy_data as toy_data_*
+
+module adult_reduced:
+    snakefile: 
+        "rules/adult-reduced.smk"
+    config: config
+
+use rule * from adult_reduced as adult_reduced_*
+
