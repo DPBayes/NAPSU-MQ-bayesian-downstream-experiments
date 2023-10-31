@@ -95,10 +95,6 @@ rule plots_ready:
             "results/adult-reduced/dpvi-posteriors/{repeat}_{epsilon}.p",
             repeat=range(repeats), epsilon=epsilons,
         ),
-        dpvi_hypers=expand(
-            "results/adult-reduced/dpvi-hyperparameters/{epsilon}.p",
-            epsilon=epsilons,
-        )
     output:
         "results/adult-reduced/ready-to-plot"
     threads: 1
