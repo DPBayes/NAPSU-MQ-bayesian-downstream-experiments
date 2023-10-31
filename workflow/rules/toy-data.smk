@@ -61,10 +61,10 @@ rule plots_ready:
             "results/toy-data/real-data-results/{repeat}.p",
             repeat=range(repeats)
         ),
-        dp_glm_posteriors=expand(
-            "results/toy-data/dp-glm-posteriors/{repeat}_{epsilon}.p",
-            repeat=range(repeats), epsilon=epsilons,
-        )
+        # dp_glm_posteriors=expand(
+        #     "results/toy-data/dp-glm-posteriors/{repeat}_{epsilon}.p",
+        #     repeat=range(repeats), epsilon=epsilons,
+        # )
     threads: 1
     resources:
         mem_mb=100,
