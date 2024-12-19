@@ -10,7 +10,7 @@ rule real_data_results:
     threads: 4
     resources:
         mem_mb=1000,
-        time="00:10:00",
+        runtime="10min",
     script:
         "../scripts/toy-data/real_data_results.py"
 
@@ -20,7 +20,7 @@ rule dp_glm:
     threads: 4
     resources:
         mem_mb=1000,
-        time="00:10:00",
+        runtime="10min",
     output:
         "results/toy-data/dp-glm-posteriors/{repeat}_{epsilon}.p"
     script:
@@ -32,7 +32,7 @@ rule napsu_mq_posterior:
     threads: 4
     resources:
         mem_mb=1000,
-        time="01:00:00",
+        runtime="1h",
     output:
         "results/toy-data/napsu-mq-posteriors/{repeat}_{epsilon}.p"
     script:
@@ -45,7 +45,7 @@ rule downstream_posterior:
     threads: 4
     resources:
         mem_mb=8000,
-        time="10:00:00",
+        runtime="10h",
     output:
         "results/toy-data/downstream-posteriors/{repeat}_{epsilon}.p"
     script:
@@ -68,7 +68,7 @@ rule plots_ready:
     threads: 1
     resources:
         mem_mb=100,
-        time="00:10:00",
+        runtime="10min",
     output:
         "results/toy-data/ready-to-plot"
     shell:

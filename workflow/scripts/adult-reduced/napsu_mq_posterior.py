@@ -3,6 +3,7 @@ import os
 sys.path.append(os.getcwd())
 import pickle
 import time
+import itertools
 from lib import rng_initialisation
 from lib import max_ent_inference as mei
 from lib import max_ent_inference_unmarginalised as meiu
@@ -24,17 +25,23 @@ torch.set_default_dtype(torch.float64)
 
 
 if __name__ == "__main__":
-    seed = rng_initialisation.get_seed(int(snakemake.wildcards.repeat), "adult napsu-mq")
+    seed = rng_initialisation.get_seed(int(snakemake.wildcards.repeat), float(snakemake.wildcards.epsilon), "adult napsu-mq")
     torch.manual_seed(seed)
     np.random.seed(seed)
     rng = jax.random.PRNGKey(seed)
 
     cat_df = pd.read_csv(str(snakemake.input.data), dtype="category")
-    df_data = DataFrameData(cat_df)
-    int_tensor = df_data.int_tensor
+    cat_df = cat_df.sample(frac=1, replace=True) # Bootstrap sample
 
     with open(str(snakemake.input.queries), "rb") as file:
         query_sets = pickle.load(file)
+    
+    columns_in_queries = set(itertools.chain(*query_sets))
+    columns_not_in_queries = [col for col in cat_df.columns if col not in columns_in_queries]
+    cat_df.drop(columns=columns_not_in_queries, inplace=True)
+
+    df_data = DataFrameData(cat_df)
+    int_tensor = df_data.int_tensor
 
     queries = marginal_query.FullMarginalQuerySet(query_sets, df_data.values_by_col)
     queries = queries.get_canonical_queries()

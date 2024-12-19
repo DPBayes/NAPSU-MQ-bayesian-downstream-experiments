@@ -37,24 +37,24 @@ if __name__ == "__main__":
     reordered_columns = list(oh_df.columns[1:]) + [oh_df.columns[0]]
     reordered_oh_df = sm.add_constant(oh_df[reordered_columns])
     n, d = c_df.shape
-    data = reordered_oh_df.drop(columns=["income"]).values
-    labels = reordered_oh_df["income"].values
-    X = jnp.array(data)
-    y = jnp.array(labels)
 
     delta = n**(-2)
-
-    rng_key, nondp_rng = jax.random.split(rng_key, 2)
-    nondp_laplace_mean, nondp_laplace_cov = blr.laplace_approximation_numpyro(nondp_rng, jnp.array(reordered_oh_df.values))
 
     n_trials = 100
     # n_trials = 2
     tuning_keys = jax.random.split(rng_key, n_trials)
 
     def objective(trial):
-        rng_key = tuning_keys[trial.number]
+        tuning_key = tuning_keys[trial.number]
+        dpvi_key, nondp_rng = jax.random.split(tuning_key)
         # if (trial.number + 1) % 10 == 0:
-        #     jax.clear_caches() # Fix memory leak, requires recent jax version
+        #     jax.clear_caches() # Fix memory leak
+
+        sampled_df = reordered_oh_df.sample(frac=1, replace=True)
+        data = sampled_df.drop(columns=["income"]).values
+        labels = sampled_df["income"].values
+        X = jnp.array(data)
+        y = jnp.array(labels)
 
         q = trial.suggest_float("q", 0.001, 1.0)
         num_iter = trial.suggest_int("num_iter", int(1e4), int(1e5), log=True)
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         clipping_threshold = trial.suggest_float("clipping_threshold", 0.1, 50)
 
         dpvi_args = optax_dpvi.DPVIArgs(
-            seed=rng_key,
+            seed=tuning_key,
             epsilon=epsilon,
             delta=delta,
             num_iterations=num_iter,
@@ -75,6 +75,7 @@ if __name__ == "__main__":
         learned_parameters, opt_state = optax_dpvi.dpvi_train(X, y, 1, dpvi_args)
         mean = learned_parameters["m"]
         cov = jnp.diag(jnp.exp(learned_parameters["s"]))
+        nondp_laplace_mean, nondp_laplace_cov = blr.laplace_approximation_numpyro(nondp_rng, jnp.array(sampled_df.values))
         mean_error, kl_div = optax_dpvi.errors(mean, cov, nondp_laplace_mean, nondp_laplace_cov)
         return mean_error
         # return kl_div

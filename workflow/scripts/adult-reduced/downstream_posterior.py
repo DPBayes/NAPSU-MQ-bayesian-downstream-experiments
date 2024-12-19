@@ -24,7 +24,7 @@ torch.set_default_dtype(torch.float64)
 
 
 if __name__ == "__main__":
-    seed = rng_initialisation.get_seed(int(snakemake.wildcards.repeat), "adult downstream posterior")
+    seed = rng_initialisation.get_seed(int(snakemake.wildcards.repeat), float(snakemake.wildcards.epsilon), "adult downstream posterior")
     torch.manual_seed(seed)
     np.random.seed(seed)
     rng = jax.random.PRNGKey(seed)

@@ -35,6 +35,7 @@ if __name__ == "__main__":
     c_df["income"] = (c_df["income"] == "True").astype(int)
     oh_df = pd.get_dummies(c_df, dtype=int)
     oh_df.drop(columns=["race_White", "gender_Female"], inplace=True)
+    oh_df = oh_df.sample(frac=1, replace=True) # Bootstrap
     reordered_columns = list(oh_df.columns[1:]) + [oh_df.columns[0]]
     reordered_oh_df = sm.add_constant(oh_df[reordered_columns])
     n, d = c_df.shape

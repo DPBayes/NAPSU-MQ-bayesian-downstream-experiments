@@ -15,7 +15,6 @@ if __name__ == "__main__":
         # "marital-status", "relationship", "occupation", "workclass", "education"
     ], inplace=True)
     df.dropna(inplace=True)
-    # df["workclass"] = df["workclass"].cat.remove_unused_categories()
     df["age"] = pd.cut(df["age"], 5)
     df["hours-per-week"] = pd.cut(df["hours-per-week"], 5)
     df["capital-gain"] = (df["capital-gain"] > 0).astype("category")
